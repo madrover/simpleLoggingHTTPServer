@@ -1,3 +1,12 @@
+#!/usr/bin/python
+
+#
+# Listen to specified port for HTTP queries.
+# When a HTTP query is received it will log the raw request line and headers.
+# If the HTTP query is a POST it will log the form fields
+#
+#
+
 import SimpleHTTPServer
 import SocketServer
 import cgi
@@ -10,7 +19,8 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
-        print self.raw_requestline
+        print "HEADERS:"
+        print "--------"
         print self.headers
 
     def do_POST(self):
@@ -22,9 +32,13 @@ class ServerHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
                      'CONTENT_TYPE':self.headers['Content-Type'],
                      })
         SimpleHTTPServer.SimpleHTTPRequestHandler.do_GET(self)
+        print "HEADERS:"
+        print "--------"
         print self.headers
+        print "POST FIELDS:"
+        print "------------"
         for item in form.list:
-            print item
+            print item.name + " = " + item.value
 
 try:
     myopts, args = getopt.getopt(sys.argv[1:],"p:")
